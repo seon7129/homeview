@@ -1,5 +1,6 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.dto.posting.PostingContentResponseDTO;
 import com.example.demo1.dto.posting.PostingSaveDTO;
 import com.example.demo1.dto.posting.PostingResponseDTO;
 import com.example.demo1.dto.posting.PostingUpdateDTO;
@@ -53,14 +54,14 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
     // 작성된 포스팅 열기
     @GetMapping("/{postId}")
     public ResponseEntity findById(@PathVariable Long postId) {
-        PostingResponseDTO posting = postingService.content(postId);
+        PostingContentResponseDTO posting = postingService.content(postId);
         return new ResponseEntity(posting, HttpStatus.OK);
     }
 
     // 수정 폼 열기
     @GetMapping("/{postId}/edit")
     public ResponseEntity editForm(@PathVariable Long postId) {
-        PostingResponseDTO posting = postingService.content(postId);
+        PostingContentResponseDTO posting = postingService.content(postId);
         return new ResponseEntity(posting, HttpStatus.OK);
 
     }

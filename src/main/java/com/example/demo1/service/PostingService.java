@@ -1,5 +1,6 @@
 package com.example.demo1.service;
 
+import com.example.demo1.dto.posting.PostingContentResponseDTO;
 import com.example.demo1.dto.posting.PostingSaveDTO;
 import com.example.demo1.dto.posting.PostingResponseDTO;
 import com.example.demo1.dto.posting.PostingUpdateDTO;
@@ -7,7 +8,6 @@ import com.example.demo1.entity.Posting;
 import com.example.demo1.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,14 +95,15 @@ public class PostingService {
 
     // 글 상세보기
     @Transactional(readOnly = true)
-    public PostingResponseDTO content(Long postId) {
+    public PostingContentResponseDTO content(Long postId) {
 
         Optional<Posting> posting = postingRepository.findById(postId);
-        Optional<PostingResponseDTO> postingResponse = Optional.ofNullable(PostingResponseDTO.builder()
+        Optional<PostingContentResponseDTO> postingResponse = Optional.ofNullable(PostingContentResponseDTO.builder()
                 .postId(posting.get().getPostId())
                 .memberId(posting.get().getMember().getId())
                 .memberNickname(posting.get().getMember().getNickname())
                 .title(posting.get().getTitle())
+                .content(posting.get().getContent())
                 .postTime(posting.get().getPostTime())
                 .postHits(posting.get().getPostHits() + 1) // 조회수 1 증가
                 .postLikes(posting.get().getPostLikes())
