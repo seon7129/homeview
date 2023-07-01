@@ -97,7 +97,7 @@ public class ReplyService {
 
 
     @Transactional
-    public void delete(Long post_id) {
-        replyRepository.deleteById(post_id);
+    public void delete(Long commentId) {
+        replyRepository.deleteById(commentId);
     }
 }

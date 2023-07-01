@@ -141,7 +141,7 @@ public class PostingService {
 
 
     @Transactional
-    public void delete(Long post_id) {
-        postingRepository.deleteById(post_id);
+    public void delete(Long postId) {
+        postingRepository.deleteById(postId);
     }
 }

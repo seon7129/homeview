@@ -1,9 +1,11 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.dto.like.LikeSaveDTO;
 import com.example.demo1.dto.posting.PostingContentResponseDTO;
 import com.example.demo1.dto.posting.PostingSaveDTO;
 import com.example.demo1.dto.posting.PostingResponseDTO;
 import com.example.demo1.dto.posting.PostingUpdateDTO;
+import com.example.demo1.service.LikeService;
 import com.example.demo1.service.PostingService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,9 @@ import java.util.List;
 @AllArgsConstructor
 @ResponseBody
 public class PostingController { // 스테이터스로만 보내는걸로. 문자든 숫자든
+
     private PostingService postingService;
+    private LikeService likeService;
 
 
     @GetMapping("/list")
@@ -79,6 +83,29 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
         postingService.update(postId, posting);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+
+    // 좋아요 클릭
+    @GetMapping("/like/save")
+    public ResponseEntity saveLike(@Valid @RequestBody LikeSaveDTO likeSaveDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<FieldError> list = bindingResult.getFieldErrors();
+            for(FieldError error : list) {
+                return new ResponseEntity<>(error.getDefaultMessage(), HttpStatus.BAD_REQUEST);
+            }
+        }
+        likeService.save(likeSaveDTO);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+
+    // 좋아요 삭제
+    @GetMapping("/like/delete")
+    public ResponseEntity deleteLike(@PathVariable Long likeId) {
+        likeService.delete(likeId);
+        return new ResponseEntity(HttpStatus.ACCEPTED);
+    }
+
 
 
     // 포스팅 삭제

@@ -66,4 +66,7 @@ public class Posting {
         this.postHits = postHits;
     }
 
+    public void setPostLikes(int postLikes) {
+        this.postLikes = postLikes;
+    }
 }
