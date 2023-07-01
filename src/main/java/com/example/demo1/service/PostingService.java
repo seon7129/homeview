@@ -58,6 +58,7 @@ public class PostingService {
                 });
         posting.setTitle(updateParam.getTitle());
         posting.setContent(updateParam.getContent());
+        postingRepository.save(posting);
     }
 
     // 글 목록
@@ -98,6 +99,7 @@ public class PostingService {
     public PostingContentResponseDTO content(Long postId) {
 
         Optional<Posting> posting = postingRepository.findById(postId);
+
         Optional<PostingContentResponseDTO> postingResponse = Optional.ofNullable(PostingContentResponseDTO.builder()
                 .postId(posting.get().getPostId())
                 .memberId(posting.get().getMember().getId())
@@ -114,6 +116,29 @@ public class PostingService {
                     return new IllegalArgumentException("글 상세보기 실패 : postId를 찾을 수 없습니다.");
                 });
     }
+
+    public void updatePostHits(Long postId) {
+
+        Posting posting = postingRepository.findById(postId)
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
+                });
+        posting.setPostHits(posting.getPostHits() + 1);
+        postingRepository.save(posting);
+    }
+
+/*
+    public void updatePostLikes(Long postId) {
+        Posting posting = postingRepository.findById(postId)
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
+                });
+        posting.setPostLikes(posting.getPostLikes() + 1);
+        postingRepository.save(posting);
+    }
+*/
+
+
 
     @Transactional
     public void delete(Long post_id) {

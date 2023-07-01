@@ -41,6 +41,7 @@ public class ReplyService {
                     return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
                 });
         reply.setContent(updateParam.getContent());
+        replyRepository.save(reply);
     }
 
     // 글 목록

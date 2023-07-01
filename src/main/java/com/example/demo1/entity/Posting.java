@@ -62,4 +62,8 @@ public class Posting {
         this.content = content;
     }
 
+    public void setPostHits(int postHits) {
+        this.postHits = postHits;
+    }
+
 }

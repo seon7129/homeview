@@ -55,6 +55,7 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
     @GetMapping("/{postId}")
     public ResponseEntity findById(@PathVariable Long postId) {
         PostingContentResponseDTO posting = postingService.content(postId);
+        postingService.updatePostHits(postId);
         return new ResponseEntity(posting, HttpStatus.OK);
     }
 
@@ -78,6 +79,7 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
         postingService.update(postId, posting);
         return new ResponseEntity(HttpStatus.OK);
     }
+
 
     // 포스팅 삭제
     @DeleteMapping("/{postId}")
