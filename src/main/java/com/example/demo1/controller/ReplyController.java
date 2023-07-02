@@ -77,7 +77,7 @@ public class ReplyController {
     }
 
     // 댓글 삭제
-    @DeleteMapping("/{commentId}")
+    @GetMapping("/{commentId}/delete")
     public ResponseEntity deleteById(@PathVariable Long commentId) {
         replyService.delete(commentId);
         return new ResponseEntity(HttpStatus.ACCEPTED);

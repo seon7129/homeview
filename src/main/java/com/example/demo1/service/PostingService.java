@@ -4,8 +4,10 @@ import com.example.demo1.dto.posting.PostingContentResponseDTO;
 import com.example.demo1.dto.posting.PostingSaveDTO;
 import com.example.demo1.dto.posting.PostingResponseDTO;
 import com.example.demo1.dto.posting.PostingUpdateDTO;
+import com.example.demo1.entity.Category;
 import com.example.demo1.entity.Member;
 import com.example.demo1.entity.Posting;
+import com.example.demo1.repository.CategoryRepository;
 import com.example.demo1.repository.MemberRepository;
 import com.example.demo1.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class PostingService {
 
     private final PostingRepository postingRepository;
     private final MemberRepository memberRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public Posting save(PostingSaveDTO postingSaveDTO) {
@@ -31,6 +34,11 @@ public class PostingService {
         Member newMember = memberRepository.findById(postingSaveDTO.getMemberId())
                 .orElseThrow(() -> { // 영속화
                     return new IllegalArgumentException("글 찾기 실패 : memberId를 찾을 수 없습니다.");
+                });
+
+        Category newCategory = categoryRepository.findById(postingSaveDTO.getCategoryId())
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
                 });
 
         /*Posting newPosting = new Posting(
@@ -41,7 +49,7 @@ public class PostingService {
                 postingSaveDTO.getPostHits(),
                 postingSaveDTO.getPostLikes());*/
 
-        Posting newPosting = postingSaveDTO.toEntity(newMember);
+        Posting newPosting = postingSaveDTO.toEntity(newMember, newCategory);
 
         return postingRepository.save(newPosting);
     }

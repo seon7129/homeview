@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "Likes")
+@Table(name = "likes")
 public class Likes { // like는 데이터베이스의 예약어..
 
     @Id

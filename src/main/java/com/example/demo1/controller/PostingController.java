@@ -100,7 +100,7 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
 
 
     // 좋아요 삭제
-    @GetMapping("/like/delete/{likeId}")
+    @GetMapping("/like/{likeId}/delete")
     public ResponseEntity deleteLike(@PathVariable Long likeId) {
         likeService.delete(likeId);
         return new ResponseEntity(HttpStatus.ACCEPTED);
@@ -109,7 +109,7 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
 
 
     // 포스팅 삭제
-    @GetMapping("/{postId}")
+    @GetMapping("/{postId}/delete")
     public ResponseEntity deleteById(@PathVariable Long postId) {
         postingService.delete(postId);
         return new ResponseEntity(HttpStatus.ACCEPTED);

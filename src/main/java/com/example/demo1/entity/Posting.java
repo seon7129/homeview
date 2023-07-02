@@ -21,7 +21,9 @@ public class Posting {
     @JoinColumn(name = "member_id")
     private Member member; // FK
 
-    //간략화를 위해 게시판 종류 board_id는 생략
+    @ManyToOne(targetEntity = Category.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category; // FK
 
     @Column(nullable = false, length = 50)
     private String title;
@@ -39,15 +41,15 @@ public class Posting {
 
 
     @Builder
-    public Posting(Member member, String title, String content, Timestamp postTime, int postHits, int postLikes) {
+    public Posting(Member member, Category category, String title, String content, Timestamp postTime, int postHits, int postLikes) {
         this.member = member;
+        this.category = category;
         this.title = title;
         this.content = content;
         this.postTime = postTime;
         this.postHits = postHits;
         this.postLikes = postLikes;
     }
-
 
 
     public void setTitle(String title) {
