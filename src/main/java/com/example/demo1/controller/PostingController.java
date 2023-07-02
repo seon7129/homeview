@@ -109,7 +109,7 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
 
 
     // 포스팅 삭제
-    @DeleteMapping("/{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity deleteById(@PathVariable Long postId) {
         postingService.delete(postId);
         return new ResponseEntity(HttpStatus.ACCEPTED);

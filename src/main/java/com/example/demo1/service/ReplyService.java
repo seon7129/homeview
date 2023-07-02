@@ -3,7 +3,11 @@ package com.example.demo1.service;
 import com.example.demo1.dto.reply.ReplyResponseDTO;
 import com.example.demo1.dto.reply.ReplySaveDTO;
 import com.example.demo1.dto.reply.ReplyUpdateDTO;
+import com.example.demo1.entity.Member;
+import com.example.demo1.entity.Posting;
 import com.example.demo1.entity.Reply;
+import com.example.demo1.repository.MemberRepository;
+import com.example.demo1.repository.PostingRepository;
 import com.example.demo1.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +24,29 @@ import java.util.Optional;
 public class ReplyService {
 
     private final ReplyRepository replyRepository;
+    private final PostingRepository postingRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Reply save(ReplySaveDTO replySaveDTO) {
 
-        Reply newReply = new Reply(
-                replySaveDTO.getCommentId(),
-                replySaveDTO.getPosting(),
-                replySaveDTO.getMember(),
+        Member newMember = memberRepository.findById(replySaveDTO.getMemberId())
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : memberId를 찾을 수 없습니다.");
+                });
+
+        Posting newPosting = postingRepository.findById(replySaveDTO.getPostId())
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
+                });
+
+        /*Reply newReply = new Reply(
+                newPosting,
+                newMember,
                 replySaveDTO.getContent(),
-                replySaveDTO.getCommentTime());
+                replySaveDTO.getCommentTime());*/
+
+        Reply newReply = replySaveDTO.toEntity(newPosting, newMember);
 
         return replyRepository.save(newReply);
     }
@@ -44,7 +61,7 @@ public class ReplyService {
         replyRepository.save(reply);
     }
 
-    // 글 목록
+    // 댓글 목록
     public List<ReplyResponseDTO> list() {
         List<Reply> replies = replyRepository.findAll();
         List<ReplyResponseDTO> replyResponseList = new ArrayList<>();
@@ -63,17 +80,7 @@ public class ReplyService {
         return replyResponseList;
     }
 
-    // 댓글 목록
-/*    @Transactional(readOnly = true)
-    public List<Reply> replyList(Posting posting) {
 
-        List<Reply> replies = replyRepository.findListByPosting(posting);
-        if (replies == null || replies.isEmpty()) {
-            throw new UnsupportedOperationException();
-        }
-        return replies;
-
-    }*/
 
 
     // 댓글 상세보기 -> 수정할 때 사용

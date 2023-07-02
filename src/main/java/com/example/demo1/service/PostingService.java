@@ -4,7 +4,9 @@ import com.example.demo1.dto.posting.PostingContentResponseDTO;
 import com.example.demo1.dto.posting.PostingSaveDTO;
 import com.example.demo1.dto.posting.PostingResponseDTO;
 import com.example.demo1.dto.posting.PostingUpdateDTO;
+import com.example.demo1.entity.Member;
 import com.example.demo1.entity.Posting;
+import com.example.demo1.repository.MemberRepository;
 import com.example.demo1.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,31 +23,25 @@ import java.util.Optional;
 public class PostingService {
 
     private final PostingRepository postingRepository;
-
-/*    private MemberService memberService;
-
-    private Member getMember(HttpSession session) {
-
-        //세션 객체 안에 있는 email정보 저장
-        String email = (String) session.getAttribute("email");
-        //log.info("회원정보 [session GET] email:" + email);
-
-        // email id로 찾은 member 객체 리턴
-        Member info = memberService.getInfo(email);
-        return info;
-    }*/
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Posting save(PostingSaveDTO postingSaveDTO) {
 
-        Posting newPosting = new Posting(
-                postingSaveDTO.getPostId(),
-                postingSaveDTO.getMember(),
+        Member newMember = memberRepository.findById(postingSaveDTO.getMemberId())
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : memberId를 찾을 수 없습니다.");
+                });
+
+        /*Posting newPosting = new Posting(
+                newMember,
                 postingSaveDTO.getTitle(),
                 postingSaveDTO.getContent(),
                 postingSaveDTO.getPostTime(),
                 postingSaveDTO.getPostHits(),
-                postingSaveDTO.getPostLikes());
+                postingSaveDTO.getPostLikes());*/
+
+        Posting newPosting = postingSaveDTO.toEntity(newMember);
 
         return postingRepository.save(newPosting);
     }
@@ -81,21 +77,8 @@ public class PostingService {
         return postingResponseList;
     }
 
-    // 댓글 목록
-/*    @Transactional(readOnly = true)
-    public List<Reply> replyList(Posting posting) {
-
-        List<Reply> replies = replyRepository.findListByPosting(posting);
-        if (replies == null || replies.isEmpty()) {
-            throw new UnsupportedOperationException();
-        }
-        return replies;
-
-    }*/
-
 
     // 글 상세보기
-    @Transactional(readOnly = true)
     public PostingContentResponseDTO content(Long postId) {
 
         Optional<Posting> posting = postingRepository.findById(postId);
@@ -126,18 +109,6 @@ public class PostingService {
         posting.setPostHits(posting.getPostHits() + 1);
         postingRepository.save(posting);
     }
-
-/*
-    public void updatePostLikes(Long postId) {
-        Posting posting = postingRepository.findById(postId)
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });
-        posting.setPostLikes(posting.getPostLikes() + 1);
-        postingRepository.save(posting);
-    }
-*/
-
 
 
     @Transactional

@@ -15,9 +15,9 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Setter
 public class ReplySaveDTO {
-    private Long commentId; //시퀀스
-    private Posting posting; //FK
-    private Member member; //FK
+
+    private Long postId; //FK
+    private Long memberId; //FK
 
     @NotBlank(message = "댓글을 입력해주세요")
     @Pattern(regexp = "^.{2,50}$", message = "글자수는 2자 이상 50자 이하로 작성해주세요")
@@ -25,9 +25,8 @@ public class ReplySaveDTO {
 
     private Timestamp commentTime;
 
-    public Reply toEntity() {
+    public Reply toEntity(Posting posting, Member member) {
         return Reply.builder()
-                .commentId(commentId)
                 .posting(posting)
                 .member(member)
                 .content(content)

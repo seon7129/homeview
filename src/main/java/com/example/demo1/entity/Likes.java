@@ -25,8 +25,7 @@ public class Likes { // like는 데이터베이스의 예약어..
     private Posting posting; //FK
 
     @Builder
-    public Likes(Long likeId, Member member, Posting posting) {
-        this.likeId = likeId;
+    public Likes(Member member, Posting posting) {
         this.member = member;
         this.posting = posting;
     }

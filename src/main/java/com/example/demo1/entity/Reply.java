@@ -35,8 +35,7 @@ public class Reply { // Comment는 키워드여서 Reply로 했음.
 
 
     @Builder
-    public Reply(Long commentId, Posting posting, Member member, String content, Timestamp commentTime) {
-        this.commentId = commentId;
+    public Reply(Posting posting, Member member, String content, Timestamp commentTime) {
         this.posting = posting;
         this.member = member;
         this.content = content;

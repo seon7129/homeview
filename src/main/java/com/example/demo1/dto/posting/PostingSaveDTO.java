@@ -15,8 +15,7 @@ import java.sql.Timestamp;
 @Setter
 public class PostingSaveDTO {
 
-    private Long postId; //시퀀스
-    private Member member;
+    private Long memberId;
 
     @NotBlank(message = "제목을 입력해주세요")
     @Pattern(regexp = "^.{2,50}$", message = "2 ~ 50 자리의 제목을 작성해주세요")
@@ -29,11 +28,10 @@ public class PostingSaveDTO {
     private Timestamp postTime;
     private int postHits;
     private int postLikes;
-    //private List<Reply> comment;
 
-    public Posting toEntity() {
+
+    public Posting toEntity(Member member) {
         return Posting.builder()
-                .postId(postId)
                 .member(member)
                 .title(title)
                 .content(content)
