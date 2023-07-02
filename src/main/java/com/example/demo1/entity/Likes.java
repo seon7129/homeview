@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "Like")
-public class Like {
+@Table(name = "Likes")
+public class Likes { // like는 데이터베이스의 예약어..
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class Like {
     private Posting posting; //FK
 
     @Builder
-    public Like(Long likeId, Member member, Posting posting) {
+    public Likes(Long likeId, Member member, Posting posting) {
         this.likeId = likeId;
         this.member = member;
         this.posting = posting;

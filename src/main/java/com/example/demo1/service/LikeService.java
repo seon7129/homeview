@@ -2,7 +2,7 @@ package com.example.demo1.service;
 
 
 import com.example.demo1.dto.posting.LikeSaveDTO;
-import com.example.demo1.entity.Like;
+import com.example.demo1.entity.Likes;
 import com.example.demo1.entity.Member;
 import com.example.demo1.entity.Posting;
 import com.example.demo1.repository.LikeRepository;
@@ -33,8 +33,11 @@ public class LikeService {
                     return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
                 });
 
-        Like newLike = likeSaveDTO.toEntity(newMember, newPosting);'
+        //Like newLike = likeSaveDTO.toEntity(newMember, newPosting);
     // 이 부분 안됨... ddl 에러남
+
+        Likes newLike = new Likes(likeSaveDTO.getLikeId(), newMember, newPosting);
+
         likeRepository.save(newLike);
 
 
@@ -50,7 +53,7 @@ public class LikeService {
     @Transactional
     public void delete(Long likeId) {
 
-        Like findLike = likeRepository.findById(likeId)
+        Likes findLike = likeRepository.findById(likeId)
                 .orElseThrow(() -> { // 영속화
                     return new IllegalArgumentException("글 찾기 실패 : likeId를 찾을 수 없습니다.");
                 });
