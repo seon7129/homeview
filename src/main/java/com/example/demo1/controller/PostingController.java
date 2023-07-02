@@ -1,6 +1,6 @@
 package com.example.demo1.controller;
 
-import com.example.demo1.dto.like.LikeSaveDTO;
+import com.example.demo1.dto.posting.LikeSaveDTO;
 import com.example.demo1.dto.posting.PostingContentResponseDTO;
 import com.example.demo1.dto.posting.PostingSaveDTO;
 import com.example.demo1.dto.posting.PostingResponseDTO;
@@ -86,7 +86,7 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
 
 
     // 좋아요 클릭
-    @GetMapping("/like/save")
+    @PostMapping("/like/save")
     public ResponseEntity saveLike(@Valid @RequestBody LikeSaveDTO likeSaveDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<FieldError> list = bindingResult.getFieldErrors();
@@ -100,7 +100,7 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
 
 
     // 좋아요 삭제
-    @GetMapping("/like/delete")
+    @GetMapping("/like/delete/{likeId}")
     public ResponseEntity deleteLike(@PathVariable Long likeId) {
         likeService.delete(likeId);
         return new ResponseEntity(HttpStatus.ACCEPTED);
