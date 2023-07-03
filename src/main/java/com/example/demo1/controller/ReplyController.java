@@ -22,9 +22,9 @@ import java.util.List;
 public class ReplyController {
 
     private ReplyService replyService;
-    @GetMapping("/list")
-    public List<ReplyResponseDTO> index() {
-        return replyService.list();
+    @GetMapping("/list/{postId}")
+    public List<ReplyResponseDTO> index(Long postId) {
+        return replyService.list(postId);
     }
 
     // 새로운 작성 폼 열기

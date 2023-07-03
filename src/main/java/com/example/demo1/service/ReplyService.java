@@ -62,8 +62,8 @@ public class ReplyService {
     }
 
     // 댓글 목록
-    public List<ReplyResponseDTO> list() {
-        List<Reply> replies = replyRepository.findAll();
+    public List<ReplyResponseDTO> list(Long postId) {
+        List<Reply> replies = replyRepository.findByPostId(postId);
         List<ReplyResponseDTO> replyResponseList = new ArrayList<>();
         for (Reply reply : replies) {
             ReplyResponseDTO replyResponseDTO = ReplyResponseDTO.builder()

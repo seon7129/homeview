@@ -21,7 +21,7 @@ public class LikeService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void save(LikeSaveDTO likeSaveDTO) {
+    public boolean save(LikeSaveDTO likeSaveDTO) {
 
         Member newMember = memberRepository.findById(likeSaveDTO.getMemberId())
                 .orElseThrow(() -> { // 영속화
@@ -33,23 +33,35 @@ public class LikeService {
                     return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
                 });
 
-        // 이미 좋아요되어있으면 에러 반환
-        if (likeRepository.findByMemberAndPosting(newMember, newPosting).isPresent()) {
-            throw new IllegalArgumentException("이미 좋아요한 포스팅 입니다.");
+        boolean alreadyChecked = isAlreadyChecked(newMember, newPosting);
+        if (alreadyChecked = false) {
+            Likes newLike = likeSaveDTO.toEntity(newMember, newPosting);
+            likeRepository.save(newLike);
+
+
+            Posting posting = postingRepository.findById(newLike.getPosting().getPostId())
+                    .orElseThrow(() -> { // 영속화
+                        return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
+                    });
+            posting.setPostLikes(posting.getPostLikes() + 1);
+            postingRepository.save(posting);
+
+            return true;
         }
-
-        Likes newLike = likeSaveDTO.toEntity(newMember, newPosting);
-        likeRepository.save(newLike);
-
-
-        Posting posting = postingRepository.findById(newLike.getPosting().getPostId())
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });
-        posting.setPostLikes(posting.getPostLikes() + 1);
-        postingRepository.save(posting);
-
+        return false;
     }
+
+
+    // 이미 좋아요한 포스팅일 때
+    public boolean isAlreadyChecked(Member member, Posting posting) {
+        if (likeRepository.findByMemberAndPosting(member, posting).isPresent()) {
+
+            // 이미 좋아요 했다면
+            return true;
+        }
+        return false;
+    }
+
 
     @Transactional
     public void delete(Long likeId) {

@@ -94,8 +94,12 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
                 return new ResponseEntity<>(error.getDefaultMessage(), HttpStatus.BAD_REQUEST);
             }
         }
-        likeService.save(likeSaveDTO);
-        return new ResponseEntity(HttpStatus.CREATED);
+        boolean save = likeService.save(likeSaveDTO);
+        if (save = true) {
+            return new ResponseEntity(HttpStatus.CREATED); // 201
+        }
+
+        return new ResponseEntity(HttpStatus.ACCEPTED); // 202
     }
 
 

@@ -9,6 +9,6 @@ import java.util.List;
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
     @Query("select r from Reply r order by  r.commentId desc")
-    List<Reply> findAll();
+    List<Reply> findByPostId(Long postId);
 
 }
