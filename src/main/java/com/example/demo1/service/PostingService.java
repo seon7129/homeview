@@ -12,6 +12,8 @@ import com.example.demo1.repository.MemberRepository;
 import com.example.demo1.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -122,5 +124,11 @@ public class PostingService {
     @Transactional
     public void delete(Long postId) {
         postingRepository.deleteById(postId);
+    }
+
+    @Transactional
+    public Page<Posting> search(String keyword, Pageable pageable){
+        Page<Posting> postsList = postingRepository.findByTitleContaining(keyword, pageable);
+        return postsList;
     }
 }
