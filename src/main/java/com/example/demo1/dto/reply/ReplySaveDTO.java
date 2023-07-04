@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 public class ReplySaveDTO {
 
     private Long postId; //FK
-    private Long memberId; //FK
+    /*private Long memberId; //FK*/
 
     @NotBlank(message = "댓글을 입력해주세요")
     @Pattern(regexp = "^.{2,50}$", message = "글자수는 2자 이상 50자 이하로 작성해주세요")

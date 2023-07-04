@@ -9,6 +9,7 @@ import com.example.demo1.entity.Reply;
 import com.example.demo1.repository.MemberRepository;
 import com.example.demo1.repository.PostingRepository;
 import com.example.demo1.repository.ReplyRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,46 +29,24 @@ public class ReplyService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Reply save(ReplySaveDTO replySaveDTO) {
+    public Reply save(ReplySaveDTO replySaveDTO, HttpSession session) {
 
-        Member newMember = memberRepository.findById(replySaveDTO.getMemberId())
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : memberId를 찾을 수 없습니다.");
-                });
-
-        Posting newPosting = postingRepository.findById(replySaveDTO.getPostId())
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });
-
-        /*Reply newReply = new Reply(
-                newPosting,
-                newMember,
-                replySaveDTO.getContent(),
-                replySaveDTO.getCommentTime());*/
+        Member newMember = getInfo(session);
+        Posting newPosting = makeNewPosting(replySaveDTO.getPostId());
 
         Reply newReply = replySaveDTO.toEntity(newPosting, newMember);
-
         return replyRepository.save(newReply);
     }
 
     @Transactional
     public void update(Long commentId, ReplyUpdateDTO updateParam) {
-        Reply reply = replyRepository.findById(commentId)
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });
+        Reply reply = makeNewReply(commentId);
         reply.setContent(updateParam.getContent());
         replyRepository.save(reply);
     }
 
     // 댓글 목록
     public List<ReplyResponseDTO> list(Long postId) {
-/*        Posting newPosting = postingRepository.findById(postId)
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });
-        log.info(String.valueOf(newPosting.getPostId()));*/
 
         List<Reply> replies = replyRepository.findByPostId(postId); // 여기서 필터링이 제대로 안되는 것 같다
         List<ReplyResponseDTO> replyResponseList = new ArrayList<>();
@@ -108,10 +87,6 @@ public class ReplyService {
     }
 
     public List<Reply> listofPosting(Long postId) {
-/*        Posting newPosting = postingRepository.findById(postId)
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });*/
         List<Reply> list = replyRepository.findByPostId(postId);
         return list;
     }
@@ -128,5 +103,39 @@ public class ReplyService {
     @Transactional
     public void delete(Long commentId) {
         replyRepository.deleteById(commentId);
+    }
+
+
+    public boolean checkIdentification(Long commentId, HttpSession session) {
+        Reply reply = makeNewReply(commentId);
+        Member member = getInfo(session);
+
+        if (reply.getMember().getId() == member.getId()) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private Member getInfo(HttpSession session){
+        String email = (String) session.getAttribute("email");
+        Optional<Member> member = memberRepository.findByEmail(email);
+        return member.get();
+    }
+
+    private Posting makeNewPosting(Long postId) {
+        Posting newPosting = postingRepository.findById(postId)
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
+                });
+        return newPosting;
+    }
+
+    private Reply makeNewReply(Long commentId) {
+        Reply reply = replyRepository.findById(commentId)
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : replyId를 찾을 수 없습니다.");
+                });
+        return reply;
     }
 }

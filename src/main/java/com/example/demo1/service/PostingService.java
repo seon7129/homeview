@@ -10,6 +10,7 @@ import com.example.demo1.entity.Posting;
 import com.example.demo1.repository.CategoryRepository;
 import com.example.demo1.repository.MemberRepository;
 import com.example.demo1.repository.PostingRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,43 +31,23 @@ public class PostingService {
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
 
+
+
     @Transactional
-    public Posting save(PostingSaveDTO postingSaveDTO) {
+    public Posting save(PostingSaveDTO postingSaveDTO, HttpSession session) {
 
-        Member newMember = memberRepository.findById(postingSaveDTO.getMemberId())
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : memberId를 찾을 수 없습니다.");
-                });
-
-        Category newCategory = categoryRepository.findById(postingSaveDTO.getCategoryId())
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
-                });
-
-        /*Posting newPosting = new Posting(
-                newMember,
-                postingSaveDTO.getTitle(),
-                postingSaveDTO.getContent(),
-                postingSaveDTO.getPostTime(),
-                postingSaveDTO.getPostHits(),
-                postingSaveDTO.getPostLikes());*/
+        Member newMember = getInfo(session);
+        Category newCategory = makeNewCategory(postingSaveDTO.getCategoryId());
 
         Posting newPosting = postingSaveDTO.toEntity(newMember, newCategory);
-
         return postingRepository.save(newPosting);
     }
 
     @Transactional
     public void update(Long postId, PostingUpdateDTO updateParam) {
-        Posting posting = postingRepository.findById(postId)
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });
 
-        Category category = categoryRepository.findById(updateParam.getCategoryId())
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
-                });
+        Posting posting = makeNewPosting(postId);
+        Category category = makeNewCategory(updateParam.getCategoryId());
 
         posting.setTitle(updateParam.getTitle());
         posting.setContent(updateParam.getContent());
@@ -74,10 +55,18 @@ public class PostingService {
         postingRepository.save(posting);
     }
 
+
+
+    public Page<Posting> search(String keyword, Pageable pageable){
+        Page<Posting> postsList = postingRepository.findByTitleContaining(keyword, pageable);
+        return postsList;
+    }
+
+
     public List<PostingResponseDTO> allList() {
 
         List<Posting> postings = postingRepository.findAll();
-        List<PostingResponseDTO> postingResponseList = new ArrayList<>(); // 여기서 필터링이 제대로 안되는 것 같다
+        List<PostingResponseDTO> postingResponseList = new ArrayList<>();
         for (Posting posting : postings) {
             log.info(posting.getCategory().getName());
             PostingResponseDTO postingResponseDTO = PostingResponseDTO.builder()
@@ -96,6 +85,8 @@ public class PostingService {
         return postingResponseList;
     }
 
+
+
     // 글 목록
     public List<PostingResponseDTO> list(Long categoryId) {
 
@@ -103,14 +94,7 @@ public class PostingService {
             return allList();
         }
 
-/*        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
-                });
-
-        log.info(category.getName());*/
-
-        List<Posting> postings = postingRepository.findByCategoryId(categoryId); // 여기서 필터링이 제대로 안되는 것 같다
+        List<Posting> postings = postingRepository.findByCategoryId(categoryId);
         List<PostingResponseDTO> postingResponseList = new ArrayList<>();
         for (Posting posting : postings) {
             log.info(posting.getCategory().getName());
@@ -155,10 +139,7 @@ public class PostingService {
 
     public void updatePostHits(Long postId) {
 
-        Posting posting = postingRepository.findById(postId)
-                .orElseThrow(() -> { // 영속화
-                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });
+        Posting posting = makeNewPosting(postId);
         posting.setPostHits(posting.getPostHits() + 1);
         postingRepository.save(posting);
     }
@@ -169,9 +150,38 @@ public class PostingService {
         postingRepository.deleteById(postId);
     }
 
-    @Transactional
-    public Page<Posting> search(String keyword, Pageable pageable){
-        Page<Posting> postsList = postingRepository.findByTitleContaining(keyword, pageable);
-        return postsList;
+
+
+    public boolean checkIdentification(Long postId, HttpSession session) {
+        Posting posting = makeNewPosting(postId);
+        Member member = getInfo(session);
+
+        if (posting.getMember().getId() == member.getId()) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private Member getInfo(HttpSession session){
+        String email = (String) session.getAttribute("email");
+        Optional<Member> member = memberRepository.findByEmail(email);
+        return member.get();
+    }
+
+    private Posting makeNewPosting(Long postId) {
+        Posting newPosting = postingRepository.findById(postId)
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
+                });
+        return newPosting;
+    }
+
+    private Category makeNewCategory(Long categoryId) {
+        Category newCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
+                });
+        return newCategory;
     }
 }

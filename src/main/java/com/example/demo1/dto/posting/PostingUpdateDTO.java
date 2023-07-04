@@ -21,7 +21,7 @@ public class PostingUpdateDTO {
     public PostingUpdateDTO() {
     }
 
-    public PostingUpdateDTO(String title, String content, String memberName, Long categoryId) {
+    public PostingUpdateDTO(String title, String content, Long categoryId) {
         this.title = title;
         this.content = content;
         this.categoryId = categoryId;

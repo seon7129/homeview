@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @Setter
 public class PostingSaveDTO {
 
-    private Long memberId;
+    /*private Long memberId;*/
     private Long categoryId;
 
     @NotBlank(message = "제목을 입력해주세요")

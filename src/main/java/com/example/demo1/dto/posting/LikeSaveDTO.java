@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class LikeSaveDTO {
 
-    private Long memberId;
+    /*private Long memberId;*/
     private Long postId;
 
     public Likes toEntity(Member member, Posting posting) {
