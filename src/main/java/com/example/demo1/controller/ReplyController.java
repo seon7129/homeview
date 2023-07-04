@@ -23,7 +23,7 @@ public class ReplyController {
 
     private ReplyService replyService;
     @GetMapping("/list/{postId}")
-    public List<ReplyResponseDTO> index(Long postId) {
+    public List<ReplyResponseDTO> index(@PathVariable Long postId) {
         return replyService.list(postId);
     }
 

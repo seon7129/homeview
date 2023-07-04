@@ -1,8 +1,5 @@
 package com.example.demo1.dto.posting;
 
-
-import com.example.demo1.entity.Member;
-import com.example.demo1.entity.Posting;
 import lombok.*;
 
 import java.sql.Timestamp;

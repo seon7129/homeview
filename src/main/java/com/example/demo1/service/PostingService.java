@@ -74,9 +74,12 @@ public class PostingService {
                     return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
                 });
 
+        log.info(category.getName());
+
         List<Posting> postings = postingRepository.findByCategory(category);
-        List<PostingResponseDTO> postingResponseList = new ArrayList<>();
+        List<PostingResponseDTO> postingResponseList = new ArrayList<>(); // 여기서 필터링이 제대로 안되는 것 같다
         for (Posting posting : postings) {
+            log.info(posting.getCategory().getName());
             PostingResponseDTO postingResponseDTO = PostingResponseDTO.builder()
                     .postId(posting.getPostId())
                     .categoryId(posting.getCategory().getCategoryId())
