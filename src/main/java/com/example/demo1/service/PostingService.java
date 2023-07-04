@@ -87,7 +87,7 @@ public class PostingService {
 
 
 
-    // 글 목록
+    // 글 목록 -> 카테고리별로 검색 결과 나오도록 업데이트 필요
     public List<PostingResponseDTO> list(Long categoryId) {
 
         if (categoryId == 0) {
