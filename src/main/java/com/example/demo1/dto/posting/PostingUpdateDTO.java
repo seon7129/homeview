@@ -16,11 +16,14 @@ public class PostingUpdateDTO {
     @Pattern(regexp = "^.{2,500}$", message = "글자수는 2자 이상 500자 이하로 작성해주세요")
     private String content;
 
+    private Long categoryId;
+
     public PostingUpdateDTO() {
     }
 
-    public PostingUpdateDTO(String title, String content, String memberName) {
+    public PostingUpdateDTO(String title, String content, String memberName, Long categoryId) {
         this.title = title;
         this.content = content;
+        this.categoryId = categoryId;
     }
 }

@@ -67,4 +67,8 @@ public class Posting {
     public void setPostLikes(int postLikes) {
         this.postLikes = postLikes;
     }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }

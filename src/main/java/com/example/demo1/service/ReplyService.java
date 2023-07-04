@@ -3,7 +3,6 @@ package com.example.demo1.service;
 import com.example.demo1.dto.reply.ReplyResponseDTO;
 import com.example.demo1.dto.reply.ReplySaveDTO;
 import com.example.demo1.dto.reply.ReplyUpdateDTO;
-import com.example.demo1.entity.Likes;
 import com.example.demo1.entity.Member;
 import com.example.demo1.entity.Posting;
 import com.example.demo1.entity.Reply;
@@ -64,13 +63,13 @@ public class ReplyService {
 
     // 댓글 목록
     public List<ReplyResponseDTO> list(Long postId) {
-        Posting newPosting = postingRepository.findById(postId)
+/*        Posting newPosting = postingRepository.findById(postId)
                 .orElseThrow(() -> { // 영속화
                     return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
                 });
-        log.info(String.valueOf(newPosting.getPostId()));
+        log.info(String.valueOf(newPosting.getPostId()));*/
 
-        List<Reply> replies = replyRepository.findByPosting(newPosting); // 여기서 필터링이 제대로 안되는 것 같다
+        List<Reply> replies = replyRepository.findByPostId(postId); // 여기서 필터링이 제대로 안되는 것 같다
         List<ReplyResponseDTO> replyResponseList = new ArrayList<>();
         for (Reply reply : replies) {
             log.info(String.valueOf(reply.getPosting().getPostId()));
@@ -87,8 +86,6 @@ public class ReplyService {
         }
         return replyResponseList;
     }
-
-
 
 
     // 댓글 상세보기 -> 수정할 때 사용
@@ -111,11 +108,11 @@ public class ReplyService {
     }
 
     public List<Reply> listofPosting(Long postId) {
-        Posting newPosting = postingRepository.findById(postId)
+/*        Posting newPosting = postingRepository.findById(postId)
                 .orElseThrow(() -> { // 영속화
                     return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
-                });
-        List<Reply> list = replyRepository.findByPosting(newPosting);
+                });*/
+        List<Reply> list = replyRepository.findByPostId(postId);
         return list;
     }
 

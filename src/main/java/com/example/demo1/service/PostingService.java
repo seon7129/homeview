@@ -62,22 +62,56 @@ public class PostingService {
                 .orElseThrow(() -> { // 영속화
                     return new IllegalArgumentException("글 찾기 실패 : postId를 찾을 수 없습니다.");
                 });
-        posting.setTitle(updateParam.getTitle());
-        posting.setContent(updateParam.getContent());
-        postingRepository.save(posting);
-    }
 
-    // 글 목록
-    public List<PostingResponseDTO> list(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
+        Category category = categoryRepository.findById(updateParam.getCategoryId())
                 .orElseThrow(() -> { // 영속화
                     return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
                 });
 
-        log.info(category.getName());
+        posting.setTitle(updateParam.getTitle());
+        posting.setContent(updateParam.getContent());
+        posting.setCategory(category);
+        postingRepository.save(posting);
+    }
 
-        List<Posting> postings = postingRepository.findByCategory(category);
+    public List<PostingResponseDTO> allList() {
+
+        List<Posting> postings = postingRepository.findAll();
         List<PostingResponseDTO> postingResponseList = new ArrayList<>(); // 여기서 필터링이 제대로 안되는 것 같다
+        for (Posting posting : postings) {
+            log.info(posting.getCategory().getName());
+            PostingResponseDTO postingResponseDTO = PostingResponseDTO.builder()
+                    .postId(posting.getPostId())
+                    .categoryId(posting.getCategory().getCategoryId())
+                    .memberId(posting.getMember().getId())
+                    .memberNickname(posting.getMember().getNickname())
+                    .title(posting.getTitle())
+                    .postTime(posting.getPostTime())
+                    .postHits(posting.getPostHits())
+                    .postLikes(posting.getPostLikes())
+                    .build();
+
+            postingResponseList.add(postingResponseDTO);
+        }
+        return postingResponseList;
+    }
+
+    // 글 목록
+    public List<PostingResponseDTO> list(Long categoryId) {
+
+        if (categoryId == 0) {
+            return allList();
+        }
+
+/*        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
+                });
+
+        log.info(category.getName());*/
+
+        List<Posting> postings = postingRepository.findByCategoryId(categoryId); // 여기서 필터링이 제대로 안되는 것 같다
+        List<PostingResponseDTO> postingResponseList = new ArrayList<>();
         for (Posting posting : postings) {
             log.info(posting.getCategory().getName());
             PostingResponseDTO postingResponseDTO = PostingResponseDTO.builder()
