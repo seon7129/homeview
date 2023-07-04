@@ -68,12 +68,18 @@ public class PostingService {
     }
 
     // 글 목록
-    public List<PostingResponseDTO> list() {
-        List<Posting> postings = postingRepository.findAll();
+    public List<PostingResponseDTO> list(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> { // 영속화
+                    return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
+                });
+
+        List<Posting> postings = postingRepository.findByCategory(category);
         List<PostingResponseDTO> postingResponseList = new ArrayList<>();
         for (Posting posting : postings) {
             PostingResponseDTO postingResponseDTO = PostingResponseDTO.builder()
                     .postId(posting.getPostId())
+                    .categoryId(posting.getCategory().getCategoryId())
                     .memberId(posting.getMember().getId())
                     .memberNickname(posting.getMember().getNickname())
                     .title(posting.getTitle())

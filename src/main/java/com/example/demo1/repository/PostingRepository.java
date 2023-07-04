@@ -1,5 +1,6 @@
 package com.example.demo1.repository;
 
+import com.example.demo1.entity.Category;
 import com.example.demo1.entity.Posting;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface PostingRepository extends JpaRepository<Posting, Long> {
 
     @Query("select p from Posting p order by  p.postId desc")
-    List<Posting> findAll();
+    List<Posting> findByCategory(Category category);
 
     Page<Posting> findByTitleContaining(String keyword, Pageable pageable);
 }

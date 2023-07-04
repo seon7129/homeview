@@ -64,6 +64,20 @@ public class LikeService {
         return newPosting.getPostLikes();
     }
 
+    public List<Likes> list(Long postId) {
+        Posting newPosting = makeNewPosting(postId);
+        List<Likes> list = likeRepository.findByPosting(newPosting);
+        return list;
+    }
+
+    @Transactional
+    public void deleteLikesinPosting(Long postId) {
+        List<Likes> list = list(postId);
+        for (Likes likes : list) {
+            likeRepository.deleteById(likes.getLikeId());
+        }
+    }
+
 
     @Transactional
     public void delete(Long memberId, Long postId) {
