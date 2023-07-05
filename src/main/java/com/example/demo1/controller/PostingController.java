@@ -151,10 +151,13 @@ public class PostingController { // 스테이터스로만 보내는걸로. 문�
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/search")
-    public Page<Posting> search(String keyword, @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<Posting> searchList = postingService.search(keyword, pageable);
-        return searchList;
+    @GetMapping("/search/{categoryId}")
+    public ResponseEntity search(String keyword, @PathVariable Long categoryId, @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<Posting> searchList = postingService.search(keyword, categoryId, pageable);
+        if (searchList == null) {
+            return new ResponseEntity(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+        }
+        return new ResponseEntity(searchList, HttpStatus.OK);
     }
 
 }

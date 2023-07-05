@@ -57,9 +57,19 @@ public class PostingService {
 
 
 
-    public Page<Posting> search(String keyword, Pageable pageable){
-        Page<Posting> postsList = postingRepository.findByTitleContaining(keyword, pageable);
-        return postsList;
+    public Page<Posting> search(String keyword, Long categoryId, Pageable pageable){
+
+        if (categoryId == 0) {
+            Page<Posting> postsListAll = postingRepository.findByTitleContaining(keyword, pageable);
+            return postsListAll;
+        }
+        else if (categoryId < 5){
+            Category category = makeNewCategory(categoryId);
+            Page<Posting> postsList = postingRepository.findByTitleContainingAndCategory(keyword, category, pageable);
+            return postsList;
+        }
+        return null;
+
     }
 
 

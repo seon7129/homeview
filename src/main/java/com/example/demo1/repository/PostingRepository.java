@@ -19,5 +19,8 @@ public interface PostingRepository extends JpaRepository<Posting, Long> {
     @Query("select p from Posting p order by  p.postId desc")
     List<Posting> findAll();
 
+    //@Query("select p from Posting p left join p.category where p.category.categoryId =:categoryId  order by  p.postId desc")
+    Page<Posting> findByTitleContainingAndCategory(String keyword, Category category, Pageable pageable);
+
     Page<Posting> findByTitleContaining(String keyword, Pageable pageable);
 }
