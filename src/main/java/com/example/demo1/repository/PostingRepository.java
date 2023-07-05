@@ -1,6 +1,7 @@
 package com.example.demo1.repository;
 
 import com.example.demo1.entity.Category;
+import com.example.demo1.entity.Member;
 import com.example.demo1.entity.Posting;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,10 +15,13 @@ import java.util.List;
 public interface PostingRepository extends JpaRepository<Posting, Long> {
 
     @Query("select p from Posting p left join p.category where p.category.categoryId =:categoryId  order by  p.postId desc")
-    List<Posting> findByCategoryId(Long categoryId);
+    Page<Posting> findByCategoryId(Long categoryId, Pageable pageable);
 
     @Query("select p from Posting p order by  p.postId desc")
-    List<Posting> findAll();
+    Page<Posting> findAll(Pageable pageable);
+
+    @Query("select p from Posting p order by  p.postId desc")
+    Page<Posting> findByMember(Member member, Pageable pageable);
 
     //@Query("select p from Posting p left join p.category where p.category.categoryId =:categoryId  order by  p.postId desc")
     Page<Posting> findByTitleContainingAndCategory(String keyword, Category category, Pageable pageable);

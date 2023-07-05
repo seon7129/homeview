@@ -26,15 +26,15 @@ import java.util.List;
 @RequestMapping("/api/posting")
 @AllArgsConstructor
 @ResponseBody
-public class PostingController { // 스테이터스로만 보내는걸로. 문자든 숫자든
+public class PostingController { // 스테이터스로만 보내는걸로
 
     private PostingService postingService;
     private LikeService likeService;
     private ReplyService replyService;
 
     @GetMapping("/list/{categoryId}")
-    public List<PostingResponseDTO> index(@PathVariable Long categoryId) {
-        return postingService.list(categoryId);
+    public Page<Posting> index(@PathVariable Long categoryId, @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
+        return postingService.list(categoryId, pageable);
     }
 
     // 새로운 작성 폼 열기

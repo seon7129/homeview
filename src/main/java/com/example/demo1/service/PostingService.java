@@ -2,7 +2,6 @@ package com.example.demo1.service;
 
 import com.example.demo1.dto.posting.PostingContentResponseDTO;
 import com.example.demo1.dto.posting.PostingSaveDTO;
-import com.example.demo1.dto.posting.PostingResponseDTO;
 import com.example.demo1.dto.posting.PostingUpdateDTO;
 import com.example.demo1.entity.Category;
 import com.example.demo1.entity.Member;
@@ -18,8 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
 
 @Slf4j
@@ -73,7 +71,7 @@ public class PostingService {
     }
 
 
-    public List<PostingResponseDTO> allList() {
+    /*public List<PostingResponseDTO> allList() { // list로 반환
 
         List<Posting> postings = postingRepository.findAll();
         List<PostingResponseDTO> postingResponseList = new ArrayList<>();
@@ -93,12 +91,18 @@ public class PostingService {
             postingResponseList.add(postingResponseDTO);
         }
         return postingResponseList;
+    }*/
+
+    public Page<Posting> allList(Pageable pageable) { // page로 반환
+
+        Page<Posting> postings = postingRepository.findAll(pageable);
+        return postings;
     }
 
 
 
-    // 글 목록 -> 카테고리별로 검색 결과 나오도록 업데이트 필요
-    public List<PostingResponseDTO> list(Long categoryId) {
+/*    // 글 목록
+    public List<PostingResponseDTO> list(Long categoryId) { // list로 반환
 
         if (categoryId == 0) {
             return allList();
@@ -122,8 +126,19 @@ public class PostingService {
             postingResponseList.add(postingResponseDTO);
         }
         return postingResponseList;
-    }
+    }*/
 
+
+    // 글 목록
+    public Page<Posting> list(Long categoryId, Pageable pageable) { // page로 반환
+
+        if (categoryId == 0) {
+            return allList(pageable);
+        }
+
+        Page<Posting> postings = postingRepository.findByCategoryId(categoryId, pageable);
+        return postings;
+    }
 
     // 글 상세보기
     public PostingContentResponseDTO content(Long postId) {
