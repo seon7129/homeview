@@ -148,6 +148,7 @@ public class PostingService {
         Optional<PostingContentResponseDTO> postingResponse = Optional.ofNullable(PostingContentResponseDTO.builder()
                 .postId(posting.get().getPostId())
                 .memberId(posting.get().getMember().getId())
+                .categoryId(posting.get().getCategory().getCategoryId())
                 .memberNickname(posting.get().getMember().getNickname())
                 .title(posting.get().getTitle())
                 .content(posting.get().getContent())

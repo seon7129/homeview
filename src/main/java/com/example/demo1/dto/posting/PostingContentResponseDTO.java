@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 public class PostingContentResponseDTO {
     private Long postId;
     private Long memberId;
+    private Long categoryId;
     private String memberNickname;
     private String title;
     private String content;
