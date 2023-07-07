@@ -15,16 +15,17 @@ import java.util.List;
 public interface PostingRepository extends JpaRepository<Posting, Long> {
 
     @Query("select p from Posting p left join p.category where p.category.categoryId =:categoryId  order by  p.postId desc")
-    Page<Posting> findByCategoryId(Long categoryId, Pageable pageable);
+    List<Posting> findByCategoryId(Long categoryId);
 
     @Query("select p from Posting p order by  p.postId desc")
-    Page<Posting> findAll(Pageable pageable);
+    List<Posting> findAll();
 
-    @Query("select p from Posting p order by  p.postId desc")
-    Page<Posting> findByMember(Member member, Pageable pageable);
+    //@Query("select p from Posting p order by  p.postId desc")
+    List<Posting> findByMember(Member member);
 
     //@Query("select p from Posting p left join p.category where p.category.categoryId =:categoryId  order by  p.postId desc")
-    Page<Posting> findByTitleContainingAndCategory(String keyword, Category category, Pageable pageable);
+    List<Posting> findByTitleContainingAndCategory(String title, Category category);
 
-    Page<Posting> findByTitleContaining(String keyword, Pageable pageable);
+    List<Posting> findByTitleContaining(String title);
+
 }

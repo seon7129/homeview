@@ -1,4 +1,3 @@
-/*
 package com.example.demo1.dto.posting;
 
 import lombok.*;
@@ -8,7 +7,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Builder
-public class PostingResponseDTO { // list로 포스팅 출력할 때 사용함. 지금은 페이지로 출력해서 사용 x
+public class PostingResponseDTO {
 
     private Long postId;
     private Long categoryId;
@@ -21,4 +20,3 @@ public class PostingResponseDTO { // list로 포스팅 출력할 때 사용함. 
 
 
 }
-*/

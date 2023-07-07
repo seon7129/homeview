@@ -1,6 +1,7 @@
 package com.example.demo1.service;
 
 import com.example.demo1.dto.posting.PostingContentResponseDTO;
+import com.example.demo1.dto.posting.PostingResponseDTO;
 import com.example.demo1.dto.posting.PostingSaveDTO;
 import com.example.demo1.dto.posting.PostingUpdateDTO;
 import com.example.demo1.entity.Category;
@@ -13,11 +14,14 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -54,90 +58,44 @@ public class PostingService {
     }
 
 
-
-    public Page<Posting> search(String keyword, Long categoryId, Pageable pageable){
+    public Page<PostingResponseDTO> search(String keyword, Long categoryId, Pageable pageable){
 
         if (categoryId == 0) {
-            Page<Posting> postsListAll = postingRepository.findByTitleContaining(keyword, pageable);
-            return postsListAll;
+            List<Posting> postsListAll = postingRepository.findByTitleContaining(keyword);
+            log.info(String.valueOf(postsListAll.size()));
+
+            Page<PostingResponseDTO> postingResponseAll = listtoPage(postingListtoPostingResponseList(postsListAll), pageable);
+            return postingResponseAll;
         }
         else if (categoryId < 5){
             Category category = makeNewCategory(categoryId);
-            Page<Posting> postsList = postingRepository.findByTitleContainingAndCategory(keyword, category, pageable);
-            return postsList;
+            List<Posting> postsList = postingRepository.findByTitleContainingAndCategory(keyword, category);
+            log.info(String.valueOf(postsList.size()));
+            Page<PostingResponseDTO> postingResponseError = listtoPage(postingListtoPostingResponseList(postsList), pageable);
+            return postingResponseError;
         }
         return null;
 
     }
 
 
-    /*public List<PostingResponseDTO> allList() { // list로 반환
+    public Page<PostingResponseDTO> allList(Pageable pageable) { // page로 반환
 
         List<Posting> postings = postingRepository.findAll();
-        List<PostingResponseDTO> postingResponseList = new ArrayList<>();
-        for (Posting posting : postings) {
-            log.info(posting.getCategory().getName());
-            PostingResponseDTO postingResponseDTO = PostingResponseDTO.builder()
-                    .postId(posting.getPostId())
-                    .categoryId(posting.getCategory().getCategoryId())
-                    .memberId(posting.getMember().getId())
-                    .memberNickname(posting.getMember().getNickname())
-                    .title(posting.getTitle())
-                    .postTime(posting.getPostTime())
-                    .postHits(posting.getPostHits())
-                    .postLikes(posting.getPostLikes())
-                    .build();
-
-            postingResponseList.add(postingResponseDTO);
-        }
-        return postingResponseList;
-    }*/
-
-    public Page<Posting> allList(Pageable pageable) { // page로 반환
-
-        Page<Posting> postings = postingRepository.findAll(pageable);
-        return postings;
+        Page<PostingResponseDTO> postingResponse = listtoPage(postingListtoPostingResponseList(postings), pageable);
+        return postingResponse;
     }
 
-
-
-/*    // 글 목록
-    public List<PostingResponseDTO> list(Long categoryId) { // list로 반환
-
-        if (categoryId == 0) {
-            return allList();
-        }
-
-        List<Posting> postings = postingRepository.findByCategoryId(categoryId);
-        List<PostingResponseDTO> postingResponseList = new ArrayList<>();
-        for (Posting posting : postings) {
-            log.info(posting.getCategory().getName());
-            PostingResponseDTO postingResponseDTO = PostingResponseDTO.builder()
-                    .postId(posting.getPostId())
-                    .categoryId(posting.getCategory().getCategoryId())
-                    .memberId(posting.getMember().getId())
-                    .memberNickname(posting.getMember().getNickname())
-                    .title(posting.getTitle())
-                    .postTime(posting.getPostTime())
-                    .postHits(posting.getPostHits())
-                    .postLikes(posting.getPostLikes())
-                    .build();
-
-            postingResponseList.add(postingResponseDTO);
-        }
-        return postingResponseList;
-    }*/
-
-
     // 글 목록
-    public Page<Posting> list(Long categoryId, Pageable pageable) { // page로 반환
+    public Page<PostingResponseDTO> list(Long categoryId, Pageable pageable) { // page로 반환
 
         if (categoryId == 0) {
             return allList(pageable);
         }
 
-        Page<Posting> postings = postingRepository.findByCategoryId(categoryId, pageable);
-        return postings;
+        List<Posting> postings = postingRepository.findByCategoryId(categoryId);
+        Page<PostingResponseDTO> postingResponse = listtoPage(postingListtoPostingResponseList(postings), pageable);
+        return postingResponse;
     }
 
     // 글 상세보기
@@ -209,5 +167,32 @@ public class PostingService {
                     return new IllegalArgumentException("글 찾기 실패 : categoryId를 찾을 수 없습니다.");
                 });
         return newCategory;
+    }
+
+    private List<PostingResponseDTO> postingListtoPostingResponseList(List<Posting> postings){
+
+        List<PostingResponseDTO> postingResponseList = new ArrayList<>();
+        for (Posting posting : postings) {
+            PostingResponseDTO postingResponseDTO = PostingResponseDTO.builder()
+                    .postId(posting.getPostId())
+                    .categoryId(posting.getCategory().getCategoryId())
+                    .memberId(posting.getMember().getId())
+                    .memberNickname(posting.getMember().getNickname())
+                    .title(posting.getTitle())
+                    .postTime(posting.getPostTime())
+                    .postHits(posting.getPostHits())
+                    .postLikes(posting.getPostLikes())
+                    .build();
+
+            postingResponseList.add(postingResponseDTO);
+        }
+        return postingResponseList;
+    }
+
+    private Page<PostingResponseDTO> listtoPage(List<PostingResponseDTO> postingResponse, Pageable pageable) {
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), postingResponse.size());
+        Page<PostingResponseDTO> newPostings = new PageImpl<>(postingResponse.subList(start,end), pageable, postingResponse.size());
+        return newPostings;
     }
 }

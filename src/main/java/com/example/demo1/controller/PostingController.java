@@ -33,7 +33,7 @@ public class PostingController { // 스테이터스로만 보내는걸로
     private ReplyService replyService;
 
     @GetMapping("/list/{categoryId}")
-    public Page<Posting> index(@PathVariable Long categoryId, @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Page<PostingResponseDTO> index(@PathVariable Long categoryId, @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
         return postingService.list(categoryId, pageable);
     }
 
@@ -153,11 +153,13 @@ public class PostingController { // 스테이터스로만 보내는걸로
 
     @GetMapping("/search/{categoryId}")
     public ResponseEntity search(String keyword, @PathVariable Long categoryId, @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<Posting> searchList = postingService.search(keyword, categoryId, pageable);
+        Page<PostingResponseDTO> searchList = postingService.search(keyword, categoryId, pageable);
         if (searchList == null) {
             return new ResponseEntity(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
+        log.info("keyword = {}", keyword);
         return new ResponseEntity(searchList, HttpStatus.OK);
     }
+
 
 }
