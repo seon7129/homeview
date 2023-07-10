@@ -1,9 +1,12 @@
 package com.example.demo1.controller;
 
+import com.example.demo1.dto.RoomDTO;
 import com.example.demo1.dto.member.MemberResponseDTO;
 import com.example.demo1.entity.Member;
+import com.example.demo1.entity.Room;
 import com.example.demo1.service.MemberService;
 import com.example.demo1.service.PostingService;
+import com.example.demo1.service.RoomService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +22,10 @@ import java.util.List;
 @AllArgsConstructor
 @ResponseBody
 public class AdminController {
-    private MemberService memberService;
 
+    private MemberService memberService;
     private PostingService postingService;
+    private RoomService roomService;
 
     public Member checkAdmin(HttpSession session){
         log.info("세션값 = " + session);
@@ -46,13 +50,23 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/member")
     public List<MemberResponseDTO> getAllMembers(HttpSession session){
         Member info = checkAdmin(session);
         if(info.getRole().equals("ADMIN")){
             return memberService.getAllMember();// 바디형식으로 전송해줘야할수도
         }else{
             return null;// 변경필요
+        }
+    }
+
+    @GetMapping("/list/room")
+    public List<Room> getAllRooms(HttpSession session){
+        Member info = checkAdmin(session);
+        if(info.getRole().equals("ADMIN")){
+            return roomService.getAllRooms();
+        }else{
+            return null;
         }
     }
 
