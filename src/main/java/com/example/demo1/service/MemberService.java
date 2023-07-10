@@ -1,22 +1,18 @@
 package com.example.demo1.service;
 
-import com.example.demo1.dto.LoginDTO;
-import com.example.demo1.dto.MemberResponseDTO;
-import com.example.demo1.dto.SignupDTO;
-import com.example.demo1.dto.UserRequestDto;
+import com.example.demo1.dto.member.LoginDTO;
+import com.example.demo1.dto.member.MemberResponseDTO;
+import com.example.demo1.dto.member.SignupDTO;
+import com.example.demo1.dto.member.UserRequestDto;
 import com.example.demo1.entity.Member;
 import com.example.demo1.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 @Service
 @Slf4j

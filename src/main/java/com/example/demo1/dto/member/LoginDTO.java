@@ -1,4 +1,4 @@
-package com.example.demo1.dto;
+package com.example.demo1.dto.member;
 
 import jakarta.validation.constraints.Email;
 import lombok.Builder;

@@ -1,11 +1,10 @@
 package com.example.demo1.controller;
 
-import com.example.demo1.dto.CheckPwDTO;
-import com.example.demo1.dto.LoginDTO;
-import com.example.demo1.dto.SignupDTO;
-import com.example.demo1.dto.UserRequestDto;
+import com.example.demo1.dto.member.CheckPwDTO;
+import com.example.demo1.dto.member.LoginDTO;
+import com.example.demo1.dto.member.SignupDTO;
+import com.example.demo1.dto.member.UserRequestDto;
 import com.example.demo1.entity.Member;
-import com.example.demo1.repository.MemberRepository;
 import com.example.demo1.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

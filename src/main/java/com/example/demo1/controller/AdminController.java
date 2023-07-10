@@ -1,8 +1,7 @@
 package com.example.demo1.controller;
 
-import com.example.demo1.dto.MemberResponseDTO;
+import com.example.demo1.dto.member.MemberResponseDTO;
 import com.example.demo1.entity.Member;
-import com.example.demo1.entity.Posting;
 import com.example.demo1.service.MemberService;
 import com.example.demo1.service.PostingService;
 import jakarta.servlet.http.HttpSession;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
