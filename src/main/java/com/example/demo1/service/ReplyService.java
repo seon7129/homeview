@@ -45,6 +45,25 @@ public class ReplyService {
         replyRepository.save(reply);
     }
 
+    // 어드민에서 모든 댓글 리스트 불러오기
+    public List<ReplyResponseDTO> allRepliesinAdmin() {
+        List<Reply> replies = replyRepository.findAll();
+        List<ReplyResponseDTO> replyResponseList = new ArrayList<>();
+        for (Reply reply : replies) {
+            ReplyResponseDTO replyResponseDTO = ReplyResponseDTO.builder()
+                    .commentId(reply.getCommentId())
+                    .postId(reply.getPosting().getPostId())
+                    .memberId(reply.getMember().getId())
+                    .memberNickName(reply.getMember().getNickname())
+                    .content(reply.getContent())
+                    .commentTime(reply.getCommentTime())
+                    .build();
+
+            replyResponseList.add(replyResponseDTO);
+        }
+        return replyResponseList;
+    }
+
     // 댓글 목록
     public List<ReplyResponseDTO> list(Long postId) {
 

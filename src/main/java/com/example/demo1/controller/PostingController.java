@@ -94,7 +94,7 @@ public class PostingController { // 스테이터스로만 보내는걸로
     }
 
 
-    // 좋아요 클릭
+    // 좋아요 클릭 -> 저장
     @PostMapping("/like/save")
     public ResponseEntity saveLike(@Valid @RequestBody LikeSaveDTO likeSaveDTO, HttpSession session, BindingResult bindingResult) {
 
@@ -121,12 +121,6 @@ public class PostingController { // 스테이터스로만 보내는걸로
         }
         return new ResponseEntity(countLikes, HttpStatus.ACCEPTED); // 202 눌렸으
     }
-
-    /*@GetMapping("/like/list/{postId}")
-    public List<Likes> listOfLikes(@PathVariable Long postId) {
-        List<Likes> list = likeService.list(postId);
-        return list;
-    }*/
 
 
     // 좋아요 삭제

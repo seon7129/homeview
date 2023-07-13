@@ -79,6 +79,12 @@ public class PostingService {
 
     }
 
+    // 어드민에서 모든 포스팅 리스트로 가져오게 하는 것
+    public List<PostingResponseDTO> allPostingsinAdmin() {
+        List<Posting> postings = postingRepository.findAll();
+        return postingListtoPostingResponseList(postings);
+    }
+
 
     public Page<PostingResponseDTO> allList(Pageable pageable) { // page로 반환
 
@@ -94,7 +100,9 @@ public class PostingService {
             return allList(pageable);
         }
 
-        List<Posting> postings = postingRepository.findByCategoryId(categoryId);
+        Category category = makeNewCategory(categoryId);
+
+        List<Posting> postings = postingRepository.findByCategory(category);
         Page<PostingResponseDTO> postingResponse = listtoPage(postingListtoPostingResponseList(postings), pageable);
         return postingResponse;
     }

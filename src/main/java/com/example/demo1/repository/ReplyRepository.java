@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
-    @Query("select r from Reply r left join r.posting where r.posting.postId =:postId order by  r.commentId desc")
+    @Query("select r from Reply r left join r.posting where r.posting.postId =:postId order by  r.commentId asc")
     List<Reply> findByPostId(Long postId);
 
-    @Query("select r from Reply r order by  r.commentId desc")
+    @Query("select r from Reply r order by  r.commentId asc")
     List<Reply> findByMember(Member member);
 
 }

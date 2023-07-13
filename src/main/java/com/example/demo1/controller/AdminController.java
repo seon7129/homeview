@@ -1,6 +1,8 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.member.MemberResponseDTO;
+import com.example.demo1.dto.posting.PostingResponseDTO;
+import com.example.demo1.dto.reply.ReplyResponseDTO;
 import com.example.demo1.entity.Member;
 import com.example.demo1.entity.Review;
 import com.example.demo1.service.*;
@@ -66,6 +68,18 @@ public class AdminController {
         }
     }
 
+    // 글 리스트로 불러오기
+    @GetMapping("/posting/list")
+    public List<PostingResponseDTO> getAllPostings(HttpSession session) {
+        Member member = checkAdmin(session);
+        if(member.getRole().equals("ADMIN")){
+            List<PostingResponseDTO> postingResponseDTO = postingService.allPostingsinAdmin();
+            return postingResponseDTO;
+        }
+        return null;
+    }
+
+
     // 글 삭제 --> 코멘트, 좋아요도 같이 삭제
     @DeleteMapping("/posting/{post_id}")
     public void deletePosting(@PathVariable Long post_id, HttpSession session){
@@ -76,6 +90,27 @@ public class AdminController {
             postingService.delete(post_id);
         }
     }
+
+    // 댓글 리스트로 불러오기
+    @GetMapping("/comment/list")
+    public List<ReplyResponseDTO> getAllReplies(HttpSession session) {
+        Member member = checkAdmin(session);
+        if(member.getRole().equals("ADMIN")){
+            List<ReplyResponseDTO> replyResponseDTO = replyService.allRepliesinAdmin();
+            return replyResponseDTO;
+        }
+        return null;
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/comment/{comment_id}")
+    public void deleteReply(@PathVariable Long comment_id, HttpSession session) {
+        Member member = checkAdmin(session);
+        if(member.getRole().equals("ADMIN")){
+            replyService.delete(comment_id);
+        }
+    }
+
 
     // 리뷰 삭제 --> 사진도 같이 삭제
     @DeleteMapping("/review/{review_id}")

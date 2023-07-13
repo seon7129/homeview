@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface PostingRepository extends JpaRepository<Posting, Long> {
 
-    @Query("select p from Posting p left join p.category where p.category.categoryId =:categoryId  order by  p.postId desc")
-    List<Posting> findByCategoryId(Long categoryId);
+    //@Query("select p from Posting p left join p.category where p.category.categoryId =:categoryId  order by  p.postId desc")
+    List<Posting> findByCategory(Category category);
 
-    @Query("select p from Posting p order by  p.postId desc")
+    //@Query("select p from Posting p order by  p.postId desc")
     List<Posting> findAll();
 
     //@Query("select p from Posting p order by  p.postId desc")
