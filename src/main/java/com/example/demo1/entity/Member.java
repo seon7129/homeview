@@ -3,7 +3,6 @@ package com.example.demo1.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Entity
 @Getter
 @NoArgsConstructor
@@ -27,7 +26,7 @@ public class Member{
     @Column(nullable = false, length = 100)
     private String password;
 
-//    @Enumerated(EnumType.STRING)
+    //    @Enumerated(EnumType.STRING)
     private String role;
 
 

@@ -1,9 +1,7 @@
 package com.example.demo1.dto.member;
 
-import com.example.demo1.entity.Member;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @Builder

@@ -1,10 +1,8 @@
 package com.example.demo1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import java.sql.Timestamp;
 
 @NoArgsConstructor
@@ -35,7 +33,8 @@ public class Reply { // Comment는 키워드여서 Reply로 했음.
 
 
     @Builder
-    public Reply(Posting posting, Member member, String content, Timestamp commentTime) {
+    public Reply(Long commentId, Posting posting, Member member, String content, Timestamp commentTime) {
+        this.commentId = commentId;
         this.posting = posting;
         this.member = member;
         this.content = content;

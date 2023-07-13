@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,16 +59,19 @@ public class PostingService {
     }
 
 
-    public Page<PostingResponseDTO> search(String keyword, Long categoryId, Pageable pageable){ // 최신순으로
+    public Page<PostingResponseDTO> search(String keyword, Long categoryId, Pageable pageable){
 
         if (categoryId == 0) {
             List<Posting> postsListAll = postingRepository.findByTitleContaining(keyword);
+            log.info(String.valueOf(postsListAll.size()));
+
             Page<PostingResponseDTO> postingResponseAll = listtoPage(postingListtoPostingResponseList(postsListAll), pageable);
             return postingResponseAll;
         }
         else if (categoryId < 5){
             Category category = makeNewCategory(categoryId);
             List<Posting> postsList = postingRepository.findByTitleContainingAndCategory(keyword, category);
+            log.info(String.valueOf(postsList.size()));
             Page<PostingResponseDTO> postingResponseError = listtoPage(postingListtoPostingResponseList(postsList), pageable);
             return postingResponseError;
         }
@@ -186,11 +188,10 @@ public class PostingService {
 
             postingResponseList.add(postingResponseDTO);
         }
-
         return postingResponseList;
     }
 
-    private Page<PostingResponseDTO> listtoPage(List<PostingResponseDTO> postingResponse,Pageable pageable) {
+    private Page<PostingResponseDTO> listtoPage(List<PostingResponseDTO> postingResponse, Pageable pageable) {
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), postingResponse.size());
         Page<PostingResponseDTO> newPostings = new PageImpl<>(postingResponse.subList(start,end), pageable, postingResponse.size());

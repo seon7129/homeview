@@ -1,16 +1,14 @@
 package com.example.demo1.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,6 +23,7 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Transactional
     public String saveFile(MultipartFile multipartFile) throws IOException {
         String originalFilename = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
 
@@ -58,10 +57,19 @@ public class S3UploadService {
         return fileNameList;
     }
 
+
     /*하나의 이미지 삭제*/
+    @Transactional
     public void deleteImage(String originalFilename)  {
-        amazonS3.deleteObject(bucket, originalFilename);
+        String[] filename = originalFilename.split("/");
+        amazonS3.deleteObject(bucket, filename[3]);
     }
+
+//    /*하나의 이미지 삭제*/
+//    @Transactional
+//    public void deleteImage(String originalFilename)  {
+//        amazonS3.deleteObject(bucket, originalFilename);
+//    }
 
 
 }

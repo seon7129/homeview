@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "likes")
 public class Likes { // like는 데이터베이스의 예약어..
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="like_id")

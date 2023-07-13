@@ -1,14 +1,9 @@
 package com.example.demo1.service;
 
 import com.example.demo1.dto.posting.PostingResponseDTO;
-import com.example.demo1.entity.Likes;
-import com.example.demo1.entity.Member;
-import com.example.demo1.entity.Posting;
-import com.example.demo1.entity.Reply;
-import com.example.demo1.repository.LikeRepository;
-import com.example.demo1.repository.MemberRepository;
-import com.example.demo1.repository.PostingRepository;
-import com.example.demo1.repository.ReplyRepository;
+import com.example.demo1.dto.review.ReviewResponseDTO;
+import com.example.demo1.entity.*;
+import com.example.demo1.repository.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +24,7 @@ public class MypageService {
     private final MemberRepository memberRepository;
     private final LikeRepository likeRepository;
     private final ReplyRepository replyRepository;
+    private final ReviewRepository reviewRepository;
 
     // 좋아요 한 포스팅
     public Page<PostingResponseDTO> postingofLike(HttpSession session, Pageable pageable) { // page로 반환
@@ -109,6 +104,28 @@ public class MypageService {
         int end = Math.min((start + pageable.getPageSize()), postingResponse.size());
         Page<PostingResponseDTO> newPostings = new PageImpl<>(postingResponse.subList(start,end), pageable, postingResponse.size());
         return newPostings;
+    }
+
+    public List<ReviewResponseDTO> getReviews(HttpSession session){
+        Member member = getInfo(session);
+        List<Review> reviews = reviewRepository.findByMember_id(member.getId());
+        List<ReviewResponseDTO> reviewDtoList = new ArrayList<>();
+        for (Review review : reviews) {
+            ReviewResponseDTO reviewResponseDTO = ReviewResponseDTO.builder()
+                    .review_id(review.getReview_id())
+                    .member_id(review.getMember().getId())
+                    .nickname(review.getMember().getNickname())
+                    .room(review.getRoom())
+                    .pros(review.getPros())
+                    .cons(review.getCons())
+                    .score(review.getScore())
+                    .postTime(review.getPostTime())
+                    .url(review.getUrl())
+                    .build();
+
+            reviewDtoList.add(reviewResponseDTO);
+        };
+        return reviewDtoList;
     }
 
 }

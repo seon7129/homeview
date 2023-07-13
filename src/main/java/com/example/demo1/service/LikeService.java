@@ -1,6 +1,5 @@
 package com.example.demo1.service;
 
-
 import com.example.demo1.dto.posting.LikeSaveDTO;
 import com.example.demo1.entity.Likes;
 import com.example.demo1.entity.Member;
@@ -12,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 

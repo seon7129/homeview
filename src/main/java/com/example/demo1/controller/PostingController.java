@@ -1,7 +1,6 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.posting.*;
-import com.example.demo1.entity.Posting;
 import com.example.demo1.service.LikeService;
 import com.example.demo1.service.PostingService;
 import com.example.demo1.service.ReplyService;

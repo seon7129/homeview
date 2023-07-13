@@ -6,6 +6,7 @@ import com.example.demo1.dto.member.SignupDTO;
 import com.example.demo1.dto.member.UserRequestDto;
 import com.example.demo1.entity.Member;
 import com.example.demo1.repository.MemberRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +24,13 @@ public class MemberService {
     public Member joinUser(SignupDTO signupDTO){
         signupDTO.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
         return memberRepository.save(signupDTO.toEntity());
+    }
+
+
+
+    public Member getMemberBySession(HttpSession session){
+        String email = (String) session.getAttribute("email");
+        return memberRepository.findByEmail(email).get();
     }
 
     public Boolean checkEmailDuplicate(String email) {
@@ -77,7 +85,7 @@ public class MemberService {
     public void deleteById(Long id) {
         memberRepository.deleteById(id);
     }
-    
+
 
     public List<MemberResponseDTO> getAllMember(){
         //return memberRepository.findAll();
@@ -95,9 +103,5 @@ public class MemberService {
             memberDtoList.add(memberResponseDTO);
         }
         return memberDtoList;
-
     }
-
-
-    //checkEmail --> 중복체크
 }

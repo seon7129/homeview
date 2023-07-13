@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,6 @@ public class MemberController {
         return ResponseEntity.ok().body(200);
     }
 
-
     @PostMapping("/join")
     public ResponseEntity execSignup(@Valid @RequestBody SignupDTO signupDTO, BindingResult bindingResult){
 
@@ -45,7 +43,6 @@ public class MemberController {
                 return new ResponseEntity<>(error.getDefaultMessage(), HttpStatus.BAD_REQUEST);
             }
         }
-
         memberService.joinUser(signupDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
 
@@ -54,17 +51,14 @@ public class MemberController {
     // [중복가입] True -> 중복, False -> 중복x
     @GetMapping("/join/{email}/exists")
     public ResponseEntity<Boolean> checkEmailDuplicate(@PathVariable String email){
-
-            return ResponseEntity.ok(memberService.checkEmailDuplicate(email));
+        return ResponseEntity.ok(memberService.checkEmailDuplicate(email));
     }
 
 
-    // 나중에 반환값을 httpstatus로 변경할지 고민
     @PostMapping("/login")
     public ResponseEntity execLogin(@RequestBody LoginDTO loginDTO, HttpSession session){
 
         String result = memberService.loginUser(loginDTO);
-        log.info("result=" +result);
         //login 실패
         if(result == "false"){
             return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
@@ -89,25 +83,15 @@ public class MemberController {
 
     // 세션의 email key로 member객체 반환
     @GetMapping("/info")
-    public ResponseEntity infoGet(HttpSession session, Model model) throws Exception{
-
-        //세션 객체 안에 있는 email정보 저장
-        String email = (String) session.getAttribute("email");
-        log.info("회원정보 [session GET] email:" + email);
-
-        // email id로 찾은 member 리턴
-        Member info = memberService.getInfo(email);
-
+    public ResponseEntity infoGet(HttpSession session) throws Exception{
+        Member info = memberService.getMemberBySession(session);
         return ResponseEntity.ok(info);
     }
 
     @PostMapping("/checkPW")
     public ResponseEntity checkPW(@RequestBody CheckPwDTO checkPwDTO, HttpSession session){
-
-        String email = (String) session.getAttribute("email");
-        Member info = memberService.getInfo(email);
+        Member info = memberService.getMemberBySession(session);
         boolean result = memberService.comparePW(info, checkPwDTO.getPassword());
-        log.info("info.getPassword=" + info.getPassword()+ ", password = " + checkPwDTO.getPassword());
         if(result == false)
             return ResponseEntity.ok(HttpStatus.EXPECTATION_FAILED); //417
         else {

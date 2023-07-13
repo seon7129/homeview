@@ -1,8 +1,6 @@
 package com.example.demo1.dto.member;
 
 import com.example.demo1.entity.Member;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -36,15 +34,14 @@ public class SignupDTO {
 
         /* DTO -> Entity */
         public Member toEntity() {
-            return Member.builder()
-                    .id(id)
-                    .name(name)
-                    .nickname(nickname)
-                    .email(email)
-                    .password(password)
-                    .role("ROLE_MEMBER")
-                    .build();
-
+                return Member.builder()
+                        .id(id)
+                        .name(name)
+                        .nickname(nickname)
+                        .email(email)
+                        .password(password)
+                        .role("ROLE_MEMBER")
+                        .build();
         }
 
 //        @Builder

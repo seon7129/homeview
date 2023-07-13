@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.posting.PostingResponseDTO;
+import com.example.demo1.dto.review.ReviewResponseDTO;
 import com.example.demo1.service.MypageService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/mypage")
@@ -40,4 +43,11 @@ public class MypageController {
     public Page<PostingResponseDTO> postingofCommentofMember(HttpSession session, @PageableDefault(sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
         return mypageService.postingofCommentofMember(session, pageable);
     }
+
+    // 본인이 쓴 리뷰 불러오기
+    @GetMapping("/reviews")
+    public List<ReviewResponseDTO> getReviews(HttpSession session){
+        return mypageService.getReviews(session);
+    }
+
 }

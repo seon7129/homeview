@@ -19,13 +19,12 @@ public class S3Controller {
     /*파일 업로드 (1)개*/
     @PostMapping("/upload")
     public String upload(@RequestParam("images") MultipartFile multipartFile) throws IOException {
-        String fileURL = s3UploadService.saveFile(multipartFile);
-        return fileURL;
+        return s3UploadService.saveFile(multipartFile);
     }
 
     /*파일 업로드 여러개*/
     @PostMapping("/uploads")
-    public List<String> uploadFiles(@RequestParam("images")List<MultipartFile> multipartFile) throws IOException{
+    public List<String> uploadFiles(@RequestParam("images")List<MultipartFile> multipartFile) throws IOException {
         return s3UploadService.uploadFile(multipartFile);
     }
 
@@ -36,5 +35,4 @@ public class S3Controller {
     }
 
 }
-
 

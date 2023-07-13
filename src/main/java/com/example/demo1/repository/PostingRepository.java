@@ -3,8 +3,6 @@ package com.example.demo1.repository;
 import com.example.demo1.entity.Category;
 import com.example.demo1.entity.Member;
 import com.example.demo1.entity.Posting;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
