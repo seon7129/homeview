@@ -80,9 +80,9 @@ public class PostingService {
     }
 
     // 어드민에서 모든 포스팅 리스트로 가져오게 하는 것
-    public List<PostingResponseDTO> allPostingsinAdmin() {
+    public List<PostingContentResponseDTO> allPostingsinAdmin() {
         List<Posting> postings = postingRepository.findAll();
-        return postingListtoPostingResponseList(postings);
+        return postingListtoPostingContentResponseList(postings);
     }
 
 
@@ -189,6 +189,29 @@ public class PostingService {
                     .memberId(posting.getMember().getId())
                     .memberNickname(posting.getMember().getNickname())
                     .title(posting.getTitle())
+                    .postTime(posting.getPostTime())
+                    .postHits(posting.getPostHits())
+                    .postLikes(posting.getPostLikes())
+                    .build();
+
+            postingResponseList.add(postingResponseDTO);
+        }
+        return postingResponseList;
+    }
+
+
+    private List<PostingContentResponseDTO> postingListtoPostingContentResponseList(List<Posting> postings){
+
+        Collections.reverse(postings);
+        List<PostingContentResponseDTO> postingResponseList = new ArrayList<>();
+        for (Posting posting : postings) {
+            PostingContentResponseDTO postingResponseDTO = PostingContentResponseDTO.builder()
+                    .postId(posting.getPostId())
+                    .categoryId(posting.getCategory().getCategoryId())
+                    .memberId(posting.getMember().getId())
+                    .memberNickname(posting.getMember().getNickname())
+                    .title(posting.getTitle())
+                    .content(posting.getContent())
                     .postTime(posting.getPostTime())
                     .postHits(posting.getPostHits())
                     .postLikes(posting.getPostLikes())

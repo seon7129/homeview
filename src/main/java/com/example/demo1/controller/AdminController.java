@@ -1,6 +1,7 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.dto.member.MemberResponseDTO;
+import com.example.demo1.dto.posting.PostingContentResponseDTO;
 import com.example.demo1.dto.posting.PostingResponseDTO;
 import com.example.demo1.dto.reply.ReplyResponseDTO;
 import com.example.demo1.entity.Member;
@@ -70,10 +71,10 @@ public class AdminController {
 
     // 글 리스트로 불러오기
     @GetMapping("/posting/list")
-    public List<PostingResponseDTO> getAllPostings(HttpSession session) {
+    public List<PostingContentResponseDTO> getAllPostings(HttpSession session) {
         Member member = checkAdmin(session);
         if(member.getRole().equals("ADMIN")){
-            List<PostingResponseDTO> postingResponseDTO = postingService.allPostingsinAdmin();
+            List<PostingContentResponseDTO> postingResponseDTO = postingService.allPostingsinAdmin();
             return postingResponseDTO;
         }
         return null;
